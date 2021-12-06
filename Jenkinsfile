@@ -1,13 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('error') {
       steps {
-        dir(path: 'source/calculation-offer-service/CalculationServiceAPISolution') {
-          sh '''sh \'pwd\'
-'''
-        }
-
+        dir(path: 'source/calculation-offer-service/CalculationServiceAPISolution')
       }
     }
 
