@@ -3,7 +3,10 @@ pipeline {
   stages {
     stage('error') {
       steps {
-        dir(path: 'source/calculation-offer-service/CalculationServiceAPISolution')
+        dir(path: 'source/calculation-offer-service/CalculationServiceAPISolution') {
+          sh 'sh \'pwd\''
+        }
+
       }
     }
 
