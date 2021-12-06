@@ -13,6 +13,7 @@ pipeline {
               sh 'docker login --username $ECR_CREDENTIALS_USR --password $ECR_CREDENTIALS_PSW $ECR_ID'
               sh 'docker image prune -f'
               sh 'docker push $ECR_ID/$CALCULATION_SERVICE_IMAGE:latest'
+              sh 'docker logout'
             }
 
           }
@@ -26,6 +27,21 @@ pipeline {
               sh 'docker login --username $ECR_CREDENTIALS_USR --password $ECR_CREDENTIALS_PSW $ECR_ID'
               sh 'docker image prune -f'
               sh 'docker push $ECR_ID/$VALIDATION_RESPONSE_DAEMON_IMAGE:latest'
+              sh 'docker logout'
+            }
+
+          }
+        }
+
+        stage('Prepare Email Service') {
+          steps {
+            dir(path: 'source/email-service') {
+              sh 'pwd'
+              sh 'docker build -t $EMAIL_SERVICE_IMAGE:latest -t $EMAIL_SERVICE_IMAGE:$BUILD_NUMBER .'
+              sh 'docker tag $EMAIL_SERVICE_IMAGE:latest $ECR_ID/$EMAIL_SERVICE_IMAGE:latest'
+              sh 'docker login --username $ECR_CREDENTIALS_USR --password $ECR_CREDENTIALS_PSW $ECR_ID'
+              sh 'docker image prune -f'
+              sh 'docker push $ECR_ID/$EMAIL_SERVICE_IMAGE:latest'
             }
 
           }
@@ -40,5 +56,6 @@ pipeline {
     CALCULATION_SERVICE_IMAGE = 'ramkumarv2-casestudy-calculation-service'
     ECR_CREDENTIALS = credentials('ecr-credentials')
     VALIDATION_RESPONSE_DAEMON_IMAGE = 'ramkumarv2-casestudy-creditcard-identity-verification-response-daemon'
+    EMAIL_SERVICE_IMAGE = 'ramkumarv2-casestudy-email-service'
   }
 }
